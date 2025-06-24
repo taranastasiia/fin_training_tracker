@@ -3,8 +3,8 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 
 class UserRole(models.TextChoices):
-    ADMIN = 'admin',
-    USER = 'user'
+    ADMIN = 'admin', 'Администратор'
+    USER = 'user', 'Пользователь'
 
 
 class Gender(models.TextChoices):
@@ -19,13 +19,24 @@ class UserManager(BaseUserManager):
             password=None,
             first_name="",
             last_name="",
+            date_birthday=None,
+            gender=None,
+            height=None,
+            weight=None,
             is_active=False
     ):
+        if not email:
+            raise ValueError("Users must have an email address")
+
         user = self.model(
             username=username,
             email=email,
             first_name=first_name,
             last_name=last_name,
+            date_birthday=date_birthday,
+            gender=gender,
+            height=height,
+            weight=weight,
             is_active=is_active
         )
         user.set_password(password)
@@ -42,14 +53,17 @@ class UserManager(BaseUserManager):
         user = self.model(
             username=username,
             email=email,
-            password=password
+            is_staff=True,
+            is_active=True,
+            is_superuser=True
         )
+        user.set_password(password)
         user.role = UserRole.ADMIN.value
         user.save(using=self._db)
         return user
 
 
-class User(AbstractUser, models.Model):
+class User(AbstractUser):
     username = models.CharField(max_length=50, unique=True)
     email = models.EmailField(unique=True, blank=False)
     role = models.CharField(choices=UserRole, max_length=10, default='user')
