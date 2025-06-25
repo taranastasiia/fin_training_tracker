@@ -26,12 +26,26 @@ schema_view = get_schema_view(
         default_version='v1',
         description="Документация API для учета тренировок, пользователей и прогресса"
     ),
-    public=True
+    public=True,
 )
+
+
+SWAGGER_SETTINGS = {
+    "SECURITY_DEFINITIONS": {
+        "Token": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header",
+            "description": "Format: 'Token <your_token>'"
+        }
+    }
+}
+
 
 apipatterns = [
     path('', include('users.urls')),
-    path('', include('workouts.urls'))
+    path('', include('workouts.urls')),
+    path('', include('progress.urls')),
 ]
 
 urlpatterns = [

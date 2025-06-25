@@ -32,10 +32,24 @@ class UserViewSet(ModelViewSet):
 
 
 class TokenAuthView(APIView):
-    """
-    Аутентификация пользователя и получение токена
-    POST /api/auth/token/
-    """
+    @swagger_auto_schema(
+        operation_description="Аутентификация пользователя и получение токена",
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            properties={
+                'username': openapi.Schema(type=openapi.TYPE_STRING, description='Имя пользователя'),
+                'password': openapi.Schema(type=openapi.TYPE_STRING, description='Пароль'),
+            },
+            required=['username', 'password']
+        ),
+        responses={
+            200: openapi.Response('Токен успешно получен', schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={'token': openapi.Schema(type=openapi.TYPE_STRING)}
+            )),
+            401: 'Ошибка аутентификации'
+        }
+    )
     def post(self, request):
         user = UserService(request)
         data = user.authenticate_user(request.data)
@@ -47,11 +61,14 @@ class TokenAuthView(APIView):
 
 
 class RegisterView(APIView):
-    """
-    Регистрация нового пользователя
-    POST /api/auth/register/
-    """
-
+    @swagger_auto_schema(
+        operation_description="Регистрация нового пользователя",
+        request_body=UserSerializer,
+        responses={
+            201: openapi.Response('Пользователь успешно зарегистрирован', UserSerializer),
+            400: 'Ошибка валидации данных'
+        }
+    )
     def post(self, request):
         user = UserService(request)
         data = user.register_user(request.data)
@@ -66,6 +83,20 @@ class RegisterView(APIView):
 class ChangePasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(
+        operation_description="Смена пароля пользователя",
+        request_body=ChangePasswordSerializer,
+        responses={
+            200: openapi.Response('Пароль успешно изменён', schema=openapi.Schema(
+                type=openapi.TYPE_OBJECT,
+                properties={
+                    'status': openapi.Schema(type=openapi.TYPE_STRING),
+                    'new_token': openapi.Schema(type=openapi.TYPE_STRING)
+                }
+            )),
+            400: 'Ошибка валидации или неправильный старый пароль'
+        }
+    )
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data, context={'user': request.user})
 

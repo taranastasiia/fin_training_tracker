@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'drf_yasg',
     'rest_framework.authtoken',
     'users',
-    'workouts'
+    'workouts.apps.WorkoutsConfig',
+    'progress'
 ]
 
 MIDDLEWARE = [
@@ -61,7 +62,7 @@ MIDDLEWARE = [
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.TokenAuthentication"
     ],
     "DEFAULT_FILTER_BACKENDS": [
         'django_filters.rest_framework.DjangoFilterBackend'
@@ -146,3 +147,15 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Token': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Format: "Token <your_token>"',
+        }
+    },
+    'USE_SESSION_AUTH': False,
+}

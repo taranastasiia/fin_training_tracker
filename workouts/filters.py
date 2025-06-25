@@ -4,7 +4,7 @@ from workouts.models import Workout
 
 
 class WorkoutFilter(FilterSet):
-    date_from = DateFilter(flavor='date', lookup_expr='gte')
+    date_from = DateFilter(field_name='date', lookup_expr='gte')
     date_to = DateFilter(field_name='date', lookup_expr='lte')
     category = CharFilter(field_name='category')
     last_week = BooleanFilter(method='filter_last_week')
