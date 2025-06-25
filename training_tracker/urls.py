@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
+from rest_framework.permissions import AllowAny
 
 
 schema_view = get_schema_view(
@@ -27,19 +28,10 @@ schema_view = get_schema_view(
         description="Документация API для учета тренировок, пользователей и прогресса"
     ),
     public=True,
+    permission_classes=(AllowAny,),
+    authentication_classes=[],
 )
 
-
-SWAGGER_SETTINGS = {
-    "SECURITY_DEFINITIONS": {
-        "Token": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header",
-            "description": "Format: 'Token <your_token>'"
-        }
-    }
-}
 
 
 apipatterns = [
