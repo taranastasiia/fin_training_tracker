@@ -13,6 +13,7 @@ from users.filters import UserFilter
 from rest_framework.authtoken.models import Token
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.permissions import AllowAny
 
 
 class UserViewSet(ModelViewSet):
@@ -61,6 +62,8 @@ class TokenAuthView(APIView):
 
 
 class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
     @swagger_auto_schema(
         operation_description="Регистрация нового пользователя",
         request_body=UserSerializer,

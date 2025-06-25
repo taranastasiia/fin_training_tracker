@@ -2,12 +2,16 @@ from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, Serializer
 from users.models import User
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import AllowAny
+
 
 
 class UserSerializer(ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
     class Meta:
         model = User
-        exclude = ['password', "user_permissions", 'groups']
+        exclude = ["user_permissions", 'groups']
 
 
 class UserLoginSerializer(Serializer):
